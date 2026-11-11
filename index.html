@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QJMOTOR — Product Room</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --qj: #c8102e;
+    color-scheme: light dark;
+    --qj-fg: #1b1b1f;
+    --qj-muted: #6b6b70;
+    --qj-border: #e2e2e6;
+    --qj-card: #fafafb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --qj-fg: #e8e8ec;
+      --qj-muted: #9d9da6;
+      --qj-border: #3a3a42;
+      --qj-card: #202024;
+    }
+  }
+  body {
+    margin: 0;
+    color: var(--foreground, var(--qj-fg));
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 4px 16px 24px; }
+
+  .arthead { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+  h1 { margin: 0; font-size: 21px; letter-spacing: .05em; }
+  h1 .red { color: var(--qj); }
+  .tabs { display: flex; gap: 6px; }
+  .tab {
+    border: 1px solid var(--border, var(--qj-border));
+    background: transparent;
+    color: inherit;
+    padding: 5px 13px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .tab:hover { border-color: var(--qj); color: var(--qj); }
+  .tab.active { background: var(--qj); border-color: var(--qj); color: #fff; }
+  .sub { margin: 0 0 14px; font-size: 12.5px; color: var(--muted-foreground, var(--qj-muted)); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .chip {
+    border: 1px solid var(--border, var(--qj-border));
+    background: transparent;
+    color: inherit;
+    border-radius: 999px;
+    padding: 5px 13px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--qj); color: var(--qj); }
+  .chip.active { background: var(--qj); border-color: var(--qj); color: #fff; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+  .card {
+    border: 1px solid var(--border, var(--qj-border));
+    border-radius: 10px;
+    padding: 13px 15px;
+    background: var(--card, var(--qj-card));
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .card:hover { border-color: var(--qj); }
+  .card.pending { border-style: dashed; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+  .cat {
+    font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .cc { font-size: 11.5px; font-weight: 700; color: var(--qj); letter-spacing: .04em; }
+
+  h3 { margin: 0; font-size: 16.5px; }
+  .tag { margin: 2px 0 8px; font-size: 12px; color: var(--muted-foreground, var(--qj-muted)); }
+
+  .spec { margin: 0 0 2px; font-size: 12px; }
+  .pow { margin: 0 0 2px; font-size: 12.5px; font-weight: 600; }
+  .tr { margin: 0; font-size: 11.5px; color: var(--muted-foreground, var(--qj-muted)); }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 10px 0; }
+  .stats div { border-left: 1px solid var(--border, var(--qj-border)); padding: 0 8px; }
+  .stats div:first-child { border-left: 0; padding-left: 0; }
+  .stats dt { font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground, var(--qj-muted)); }
+  .stats dd { margin: 0; font-size: 13px; font-weight: 600; }
+
+  .dims { margin: 2px 0 0; font-size: 11px; color: var(--muted-foreground, var(--qj-muted)); }
+
+  .f { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 9px; }
+  .f span {
+    font-size: 11px; border: 1px solid var(--border, var(--qj-border));
+    padding: 2px 7px; border-radius: 5px; color: var(--muted-foreground, var(--qj-muted));
+  }
+
+  .colors { display: flex; align-items: center; gap: 7px; margin-top: 10px; flex-wrap: wrap; }
+  .dots { display: flex; gap: 4px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(127,127,127,.4); }
+  .cnames { font-size: 11px; color: var(--muted-foreground, var(--qj-muted)); }
+
+  .note { margin-top: 10px; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--qj); }
+
+  /* ---- LOG VIEW ---- */
+  .loggroup { margin-bottom: 18px; }
+  .logdate { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--qj); margin-bottom: 7px; }
+  .entry { margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px dashed var(--border, var(--qj-border)); }
+  .entry:last-child { border-bottom: 0; }
+  .badge {
+    font-size: 10px; font-weight: 800; letter-spacing: .08em;
+    padding: 2px 7px; border-radius: 4px; margin-right: 7px;
+    vertical-align: 1px; white-space: nowrap;
+  }
+  .etitle { font-weight: 700; font-size: 13.5px; }
+  .ebody { font-size: 13px; }
+  .ebody code { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; }
+  .sub { font-size: 12px; color: var(--muted-foreground, var(--qj-muted)); margin: 4px 0 0; }
+  .logmeta { font-size: 11px; color: var(--muted-foreground, var(--qj-muted)); margin-top: 2px; }
+
+  footer { margin-top: 16px; font-size: 11.5px; color: var(--muted-foreground, var(--qj-muted)); }
+  @media (prefers-reduced-motion: reduce) {
+    .chip, .card, .tab { transition: none; }
+  }
+  @page { margin: 10mm; }
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="arthead">
+    <h1><span class="red">QJ</span>MOTOR — Product Room</h1>
+    <div class="tabs">
+      <button class="tab active" data-view="lineup">Line-up 2026</button>
+      <button class="tab" data-view="log">Log Produk</button>
+    </div>
+  </div>
+  <p class="sub">Data per PRODUCT_GUIDE 2026-06-09 · klik kartu untuk bahas produknya di chat</p>
+
+  <section id="view-lineup">
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="view-log" hidden>
+    <p class="logmeta" id="log-meta"></p>
+    <div id="log-holder"></div>
+  </section>
+
+  <footer>#QJMOTOR #QJMOTORIndonesia #AlwaysForward &nbsp;·&nbsp; Sumber: knowledge/PRODUCT_GUIDE_20260609.md · knowledge/PRODUCT_LOG.md</footer>
+</div>
+
+<script type="text/plain" id="log-snapshot">
+# LOG PRODUK & INFO — QJMOTOR
+
+Catatan kronologis semua perubahan data produk, penambahan produk, koreksi, dan info penting.
+**Aturan: setiap ada perubahan info produk di room ini, langsung catat di sini** (tanggal, tipe, deskripsi, sumber) — buat pertanggungjawaban & pengecekan ulang di kemudian hari.
+
+Tipe entri: `[TAMBAH]` produk/info baru · `[UBAH]` revisi data · `[KOREKSI]` pembetulan fakta · `[INFO]` info penting non-produk.
+
+---
+
+## 2026-11-10
+
+- `[TAMBAH]` **Line-up dashboard HTML** — dibuat `qjmotor-lineup.html` (root workspace): 16 produk, filter kategori, klik kartu = tanya detail ke chat. Sumber data: `knowledge/PRODUCT_GUIDE_20260609.md`.
+- `[KOREKSI]` **"TVC" bukan kategori motor** — TVC = video iklan (Television Commercial). Kategori "Baru · TVC" di dashboard dihapus.
+  - **Tourino 250 SX** → klasifikasi **Adventure**.
+  - **Fort 180 R-Pro** → klasifikasi **Scooter**.
+  - Sumber: koreksi user. Klasifikasi dicatat permanen di `AGENTS.md` → Proyek TVC.
+- `[INFO]` **Produk TVC ditandai "PRODUK BARU"** — Tourino 250 SX & Fort 180 R-Pro tampil di dashboard dengan badge merah "PRODUK BARU — RILIS 5 DES 2026 · SPEK MENYUSUL" (dashed border, spek TBA). Spek menunggu kiriman QJ.
+- `[UBAH]` **Dashboard → mode artifacts (ala Claude)** — `qjmotor-lineup.html` di-rename jadi `qjmotor-artifacts.html`, ditambah tab switcher: **Line-up 2026** & **Log Produk**. File lama dihapus.
+- `[INFO]` **Log Produk tampil visual di dashboard** — tab "Log Produk" merender `knowledge/PRODUCT_LOG.md` sebagai timeline berwarna per tipe entri (TAMBAH/UBAH/KOREKSI/INFO). Live via fetch bila preview mendukung; fallback ke snapshot ter-embed di HTML.
+- `[UBAH]` **Aturan klaim cc = angka nama produk** — untuk kepentingan konten, semua klaim cc disamakan dengan nama produk (Fort 180 → "180 cc", Tourino 250 → "250 cc", SRV 600 V → "600 cc"), bukan displacement aktual. Aturan dicatat di `AGENTS.md` → Aturan konten. Dashboard line-up diupdate: badge cc 16 kartu kini menampilkan klaim nama produk (termasuk 2 produk TVC: Tourino 250 SX → 250, Fort 180 R-Pro → 180).
+- `[UBAH]` **Styling dashboard untuk render standalone** — saat dibuka di luar frame chat (browser/panel preview), font jatuh ke default serif (Times) tanpa tema → terlihat jelek. Fix: font stack sistem, fallback warna adaptif light/dark (`prefers-color-scheme`) via custom props `--qj-*`, `color-scheme: light dark`. Var tema frame Hermes tetap diprioritaskan (tidak ditimpa).
+- `[INFO]` **Dashboard diupload ke Google Drive** — folder "QJMOTOR" (My Drive) berisi `QJMOTOR Product Room.html` (sumber) + `QJMOTOR Product Room (Preview).pdf` (render untuk preview HP).
+- `[UBAH]` **Folder Drive QJMOTOR di-share publik** — permission "anyone with link" role reader (permintaan user): link bisa dibuka tanpa login.
+- `[UBAH]` **Auto-sinkron Dashboard → Drive** — `tools/sync_drive_pdf.py` + cron Hermes "QJMOTOR Drive Sync" (tiap jam, mode script tanpa LLM). Alur: hash HTML berubah → render PDF via headless Chrome → `files.update` kedua file Drive (ID tetap, link tidak berubah). Diam saat tidak ada perubahan. Catatan teknis: Chrome CLI mengabaikan `@page size` → PDF A4 portrait (ramah HP); background ikut via `print-color-adjust: exact`.
+</script>
+
+<script>
+const COLORHEX = {
+  "QJ Red":"#d4001c","Vitality Red":"#c8102e","Day & Night Black":"#141416","Night Black":"#101014",
+  "Starry Black":"#1c1c22","Starry Night":"#232733","Space Silver":"#c7c9ce","Arctic White":"#f4f4f2",
+  "Sea Salt White":"#ecebe6","Seasalt White":"#ecebe6","Lava Grey":"#5c5f66","Royal Ivory":"#efe9da",
+  "Twilight Orange":"#e2722c","Interstellar":"#474a7a","Forest Green":"#2f4a36","Sahara Khaki":"#b5a273",
+  "Competition Blue":"#1d4fd8","Aurora":"#5fb3b3"
+};
+const CATHEX = { sport:"#c8102e", adventure:"#3e7c4f", cruiser:"#b06a1b", scooter:"#2e6fb8" };
+const CATLABEL = { sport:"Sport", adventure:"Adventure", cruiser:"Cruiser", scooter:"Scooter" };
+
+const PRODUCTS = [
+  { n:"SRK 800 RR", cat:"sport", cc:"800", tag:"Pure-Performance Four-Cylinder Sportbike",
+    eng:"4-silinder inline, 16V DOHC, liquid-cooled",
+    pow:"70,0 kW (95,2 PS) @ 10.000 rpm · 75,0 N·m @ 8.500 rpm",
+    tr:"6-speed manual · slipper clutch",
+    dims:"2.085 × 770 × 1.130 mm · WB 1.440 mm", seat:null, gc:"120", w:"211 kg", tank:"16 L",
+    f:["WSBK DNA + winglet aero","Marzocchi USD + Brembo dual 320 mm","TCS switchable","Full LED biomimetic"],
+    c:["QJ Red","Sea Salt White"] },
+
+  { n:"SRK 250 RA", cat:"sport", cc:"250", tag:"The Future of Next-Gen Sportbike",
+    eng:"Inline twin, 4-stroke, liquid-cooled",
+    pow:"26,4 kW (35,9 PS) @ 12.750 rpm · 23,0 N·m @ 9.750 rpm",
+    tr:"AMT 6-gears, electronic clutch actuator",
+    dims:"2.030 × 740 × 1.135 mm · WB 1.390 mm", seat:"785", gc:"140", w:"172 kg", tank:"14,8 L",
+    f:["Hassle-free AMT","Single-sided swingarm","Launch control","TFT, Sport/Eco mode"],
+    c:["Vitality Red","Day & Night Black"] },
+
+  { n:"CITO 150", cat:"sport", cc:"150", tag:"The New Standard of Urban Mobility",
+    eng:"1-silinder, 4-stroke, air-cooled",
+    pow:"9,0 kW @ 8.000 rpm",
+    tr:"Automatic CVT (belt drive)",
+    dims:"1.800 × 780 × 980 mm · WB 1.300 mm", seat:"745", gc:"135", w:"114 kg", tank:"9 L",
+    f:["Sub-tank shock absorber","ABS + dual disc","Under-seat storage"],
+    c:["Vitality Red","Day & Night Black","Arctic White","Space Silver"],
+    note:"SPORT BIKE — bukan skuter" },
+
+  { n:"TOURINO 700 SX", cat:"adventure", cc:"700", tag:"Power Your Adventure",
+    eng:"2-silinder in-line, DOHC, liquid-cooled",
+    pow:"51,5 kW (70,1 PS) @ 8.000 rpm · 70,0 N·m @ 6.000 rpm",
+    tr:"6-speed manual · chain drive",
+    dims:"2.230 × 950 × 1.460 mm · WB 1.500 mm", seat:null, gc:"210", w:"244,3 kg", tank:"19,5 L",
+    f:["Marzocchi USD 140mm","Brembo + off-road ABS","TCS + TPMS","TFT 7\", heated grips"],
+    c:["Day & Night Black","Space Silver","Arctic White"] },
+
+  { n:"TOURINO 250 DX", cat:"adventure", cc:"250", tag:"Lightweight Adventure",
+    eng:"1-silinder, DOHC, liquid-cooled",
+    pow:"19,0 kW @ 8.500 rpm",
+    tr:"6-speed manual · slipper clutch",
+    dims:"2.180 × 920 × 1.420 mm · WB 1.415 mm", seat:null, gc:"230", w:"155 kg", tank:"13 L",
+    f:["Golden spoke tubeless","Off-road ABS switchable","LED 34.300 cd","360° engine guard"],
+    c:["Day & Night Black","Vitality Red"] },
+
+  { n:"SRV 600 V", cat:"cruiser", cc:"600", tag:"The Power of Authentic V-Four Cruising",
+    eng:"4-silinder V-engine, DOHC, liquid-cooled",
+    pow:"50 kW @ 10.500 rpm",
+    tr:"6-speed manual · Gates belt drive",
+    dims:"2.280 × 830 × 1.125 mm · WB 1.585 mm", seat:"700", gc:"150", w:"224,9 kg", tank:"16,5 L",
+    f:["V4 flagship","Dual-channel ABS + TCS","TPMS + TFT bulat","Assist & slipper clutch"],
+    c:["Starry Black","Night Black","Space Silver"] },
+
+  { n:"SRV 250 LIBERO", cat:"cruiser", cc:"250", tag:"The Soul of V-Twin Cruising",
+    eng:"2-silinder V-engine, liquid-cooled",
+    pow:"20,5 kW @ 8.000 rpm",
+    tr:"AMT 6-speed (Drive / Manual)",
+    dims:"2.228 × 845 × 1.100 mm · WB 1.516 mm", seat:"700", gc:"165", w:"181,35 kg", tank:"16 L",
+    f:["V-Twin + AMT","Dual-channel ABS + TCS","USD front fork"],
+    c:["Lava Grey","Starry Night","Day & Night Black"] },
+
+  { n:"SRV 250 AMT", cat:"cruiser", cc:"250", tag:"The Timeless V-Twin Cruiser",
+    eng:"2-silinder V-engine, liquid-cooled",
+    pow:"20,5 kW @ 9.000 rpm",
+    tr:"AMT 6-speed",
+    dims:"2.130 × 845 × 1.105 mm · WB 1.410 mm", seat:"700", gc:"165", w:"170 kg", tank:"16 L",
+    f:["AMT seamless","Dual-channel ABS + TCS","Teardrop tank klasik"],
+    c:["Royal Ivory","Twilight Orange","Seasalt White","Starry Night","Space Silver"] },
+
+  { n:"SRV 200", cat:"cruiser", cc:"200", tag:"Retro Cruiser — Speak Your Noise",
+    eng:"1-silinder, 4-stroke, OHV 2V",
+    pow:"9,5 kW @ 7.500 rpm · 13,9 N·m @ 6.000 rpm",
+    tr:"5-speed manual · chain drive",
+    dims:"2.120 × 825 × 1.050 mm · WB 1.445 mm", seat:"720", gc:"140", w:"152 kg", tank:"14,7 L",
+    f:["Double cradle chassis","Basis kustom ideal","USB + Type-C"],
+    c:["Royal Ivory","Day & Night Black","Twilight Orange"] },
+
+  { n:"VIENTO 180", cat:"scooter", cc:"180", tag:"Powerful Urban Performance",
+    eng:"1-silinder, 4V SOHC, liquid-cooled (hybrid)",
+    pow:"13,5 kW @ 8.500 rpm · 15,0 N·m @ 6.500 rpm",
+    tr:"Belt-CVT",
+    dims:"1.965 × 700 × 1.130 mm · WB 1.360 mm", seat:"755", gc:"145", w:"127 kg", tank:"10 L",
+    f:["Dashboard touchscreen","ABS+TCS / CBS (varian)","Sub-tank shock"],
+    c:["Vitality Red","Competition Blue","Arctic White","Aurora"] },
+
+  { n:"FORT 250", cat:"scooter", cc:"250", tag:"Reliable Long-Distance Touring",
+    eng:"1-silinder, SOHC, liquid-cooled",
+    pow:"17,0 kW @ 8.000 rpm · 24,0 N·m @ 6.500 rpm",
+    tr:"Automatic CVT",
+    dims:"2.200 × 800 × 1.280 mm · WB 1.500 mm", seat:"765", gc:"140", w:"186,7 kg", tank:"10,2 L",
+    f:["TCS + dual-channel ABS","Extended legroom","Full LED"],
+    c:["Interstellar","Starry Night","Space Silver"] },
+
+  { n:"FORT 180 Adventure", cat:"scooter", cc:"180", tag:"The Hybrid Adventure Scooter",
+    eng:"1-silinder, 4V SOHC, LC (hybrid)",
+    pow:"13,0 kW @ 8.500 rpm · 15,2 N·m @ 6.500 rpm",
+    tr:"Automatic CVT (belt)",
+    dims:"1.980 × 780 × 1.250 mm · WB 1.345 mm", seat:"780", gc:"130", w:"145 kg", tank:"8 L",
+    f:["USD front forks","Ban dual-purpose","ABS varian"],
+    c:["Forest Green","Sahara Khaki"] },
+
+  { n:"FORT 250 Adventure", cat:"scooter", cc:"250", tag:"Adventure Crossover",
+    eng:"1-silinder, SOHC, liquid-cooled",
+    pow:"17,0 kW @ 8.000 rpm · 24,5 N·m @ 6.000 rpm",
+    tr:"Automatic CVT",
+    dims:"1.980 × 780 × 1.250 mm · WB 1.365 mm", seat:"780", gc:"130", w:"165,4 kg", tank:"10 L",
+    f:["Trim ABS: spoke + sub-tank","Trim CBS: cast alloy","TCS switch (ABS trim)"],
+    c:["Space Silver","Interstellar","Vitality Red","Day & Night Black"] },
+
+  { n:"FORT 250 Adventure RIDERPRO", cat:"scooter", cc:"250", tag:"The Awakening of Smart Adventure",
+    eng:"1-silinder, SOHC, liquid-cooled",
+    pow:"17,0 kW @ 8.000 rpm",
+    tr:"Automatic CVT",
+    dims:"1.980 × 780 × 1.250 mm · WB 1.345 mm", seat:"760", gc:"130", w:"165,4 kg", tank:"10 L",
+    f:["TFT 7\" + mirroring nav","Keyless app, BSD radar, dashcam","TCS Road/Off-Road","OTA + iShow"],
+    c:["Space Silver","Interstellar","Vitality Red","Day & Night Black"] },
+
+  { n:"TOURINO 250 SX", cat:"adventure", cc:"250", tag:"Lebih agile dari DX, untuk pemakaian lebih ekstrem",
+    eng:"Spesifikasi menunggu kiriman QJ",
+    pow:"—",
+    tr:"—",
+    dims:"—", seat:null, gc:"—", w:"—", tank:"—",
+    f:["Produk baru · rilis 5 Des 2026","Posisi sedikit di bawah 250 DX","TVC: syuting Bali"],
+    c:[],
+    note:"PRODUK BARU — RILIS 5 DES 2026 · SPEK MENYUSUL", pending:true },
+
+  { n:"FORT 180 R-PRO", cat:"scooter", cc:"180", tag:"Fort 180 + teknologi R-Pro",
+    eng:"Spesifikasi menunggu kiriman QJ",
+    pow:"—",
+    tr:"—",
+    dims:"—", seat:null, gc:"—", w:"—", tank:"—",
+    f:["Produk baru · rilis 5 Des 2026","Jalan raya + light adventure","TVC: syuting Bali"],
+    c:[],
+    note:"PRODUK BARU — RILIS 5 DES 2026 · SPEK MENYUSUL", pending:true }
+];
+
+/* ---- Line-up view ---- */
+const grid = document.getElementById("grid");
+const chips = document.getElementById("chips");
+
+const COUNTS = { semua: PRODUCTS.length };
+PRODUCTS.forEach(p => { COUNTS[p.cat] = (COUNTS[p.cat] || 0) + 1; });
+const CATS = [["semua","Semua"],["sport","Sport"],["adventure","Adventure"],["cruiser","Cruiser"],["scooter","Scooter"]];
+
+function filter(cat) {
+  document.querySelectorAll(".card").forEach(c => {
+    c.style.display = (cat === "semua" || c.dataset.cat === cat) ? "" : "none";
+  });
+}
+
+CATS.forEach(([k, label]) => {
+  const b = document.createElement("button");
+  b.className = "chip" + (k === "semua" ? " active" : "");
+  b.textContent = label + " (" + COUNTS[k] + ")";
+  b.onclick = () => {
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    b.classList.add("active");
+    filter(k);
+  };
+  chips.appendChild(b);
+});
+
+function card(p) {
+  const el = document.createElement("article");
+  el.className = "card" + (p.pending ? " pending" : "");
+  el.dataset.cat = p.cat;
+  el.setAttribute("data-hermes-send",
+    "Jelaskan detail QJMOTOR " + p.n + ": spesifikasi, fitur kunci, dan angle konten yang menarik.");
+  const catColor = CATHEX[p.cat];
+  const dots = p.c.map(cn =>
+    '<span class="dot" style="background:' + (COLORHEX[cn] || "#999") + '"></span>'
+  ).join("");
+  const colors = p.c.length
+    ? '<div class="colors"><div class="dots">' + dots + '</div><span class="cnames">' + p.c.join(" · ") + '</span></div>'
+    : "";
+  const features = p.f.map(x => "<span>" + x + "</span>").join("");
+  el.innerHTML =
+    '<div class="top">' +
+      '<span class="cat" style="background:' + catColor + '1a;color:' + catColor + '">' + CATLABEL[p.cat] + '</span>' +
+      '<span class="cc">' + (p.cc ? p.cc + " CC" : "SPEK TBA") + '</span>' +
+    '</div>' +
+    '<h3>' + p.n + '</h3>' +
+    '<p class="tag">' + p.tag + '</p>' +
+    '<p class="spec">' + p.eng + '</p>' +
+    '<p class="pow">' + p.pow + '</p>' +
+    '<p class="tr">' + p.tr + '</p>' +
+    '<dl class="stats">' +
+      '<div><dt>Berat</dt><dd>' + p.w + '</dd></div>' +
+      '<div><dt>Jok</dt><dd>' + (p.seat ? p.seat + " mm" : "—") + '</dd></div>' +
+      '<div><dt>GC</dt><dd>' + (p.gc === "—" ? "—" : p.gc + " mm") + '</dd></div>' +
+      '<div><dt>Tangki</dt><dd>' + p.tank + '</dd></div>' +
+    '</dl>' +
+    '<p class="dims">' + p.dims + '</p>' +
+    '<div class="f">' + features + '</div>' +
+    colors +
+    (p.note ? '<p class="note">' + p.note + '</p>' : "");
+  return el;
+}
+
+PRODUCTS.forEach(p => grid.appendChild(card(p)));
+
+/* ---- Log view ---- */
+const TYPEHEX = { "TAMBAH":"#3e7c4f", "UBAH":"#b06a1b", "KOREKSI":"#c8102e", "INFO":"#2e6fb8" };
+
+function inline(s) {
+  return s.replace(/\*\*/g, "").replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
+function renderLog(md) {
+  const groups = [];
+  let curG = null, curE = null;
+  md.split("\n").forEach(line => {
+    const h = line.match(/^##\s+(.+)/);
+    if (h) { curG = { date: h[1].trim(), entries: [] }; groups.push(curG); curE = null; return; }
+    const b = line.match(/^\s*-\s+`\[(TAMBAH|UBAH|KOREKSI|INFO)\]`\s+\*\*(.+?)\*\*(.*)$/);
+    if (b && curG) { curE = { type: b[1], title: b[2], body: b[3].trim(), subs: [] }; curG.entries.push(curE); return; }
+    const s = line.match(/^\s+-\s+(.+)/);
+    if (s && curE) curE.subs.push(s[1].trim());
+  });
+  if (!groups.length) return '<p class="logmeta">Log kosong.</p>';
+  return groups.map(g =>
+    '<div class="loggroup"><div class="logdate">' + g.date + '</div>' +
+    g.entries.map(e => {
+      const c = TYPEHEX[e.type] || "#666";
+      const body = e.body ? '<span class="ebody">' + inline(e.body) + '</span>' : "";
+      const subs = e.subs.length ? '<p class="sub">– ' + e.subs.map(inline).join('<br>– ') + '</p>' : "";
+      return '<div class="entry">' +
+        '<span class="badge" style="background:' + c + '1a;color:' + c + '">' + e.type + '</span>' +
+        '<span class="etitle">' + inline(e.title) + '</span>' +
+        body + subs +
+      '</div>';
+    }).join("") +
+    '</div>'
+  ).join("");
+}
+
+let logLive = false;
+async function loadLog(force) {
+  if (!force && document.getElementById("log-holder").childElementCount) return;
+  let md = null;
+  try {
+    const r = await fetch("knowledge/PRODUCT_LOG.md", { cache: "no-store" });
+    if (r.ok) { md = await r.text(); logLive = true; }
+  } catch (e) { logLive = false; }
+  if (!md) md = document.getElementById("log-snapshot").textContent.trim();
+  document.getElementById("log-holder").innerHTML = renderLog(md);
+  document.getElementById("log-meta").textContent = logLive
+    ? "Live dari knowledge/PRODUCT_LOG.md — selalu sinkron"
+    : "Snapshot ter-embed (fetch tidak tersedia di frame) — sumber: knowledge/PRODUCT_LOG.md";
+}
+
+/* ---- Tab switching ---- */
+let activeView = "lineup";
+try { activeView = localStorage.getItem("qj-artifact") || "lineup"; } catch (e) {}
+
+function show(view) {
+  activeView = view;
+  document.getElementById("view-lineup").hidden = view !== "lineup";
+  document.getElementById("view-log").hidden = view !== "log";
+  document.querySelectorAll(".tab").forEach(t =>
+    t.classList.toggle("active", t.dataset.view === view));
+  try { localStorage.setItem("qj-artifact", view); } catch (e) {}
+  if (view === "log") loadLog(logLive);
+}
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.onclick = () => show(t.dataset.view);
+});
+
+show(activeView);
+loadLog(false);
+</script>
+</body>
+</html>
