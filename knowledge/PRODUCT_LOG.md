@@ -7,6 +7,13 @@ Tipe entri: `[TAMBAH]` produk/info baru · `[UBAH]` revisi data · `[KOREKSI]` p
 
 ---
 
+## 2026-11-12
+
+- `[TAMBAH]` **Mode Manual ada di SEMUA motor AMT QJMOTOR** (SRK 250 RA, SRV 250 LIBERO, SRV 250 AMT). Product guide hanya menyebutnya untuk SRV 250 LIBERO ("Drive" / "Manual" paddle-shift); fitur ini aman diklaim lintas model AMT. Sumber: user.
+- `[TAMBAH]` **Fort 180 Adventure — warna per varian.** Varian **ABS (+TCS)**: Forest Green & Sahara Khaki. Varian **CBS**: putih & hitam (nama warna resmi belum dikonfirmasi). Product guide hanya mencantumkan Forest Green & Sahara Khaki. Kemungkinan "Grey tanpa box" di brief Maulid Nabi (Agustus) = unit CBS. Sumber: user.
+  - Konsekuensi konten: unit hijau/khaki = varian ABS → fitur khusus ABS (rem 240/220 mm terintegrasi ABS, TCS, rear shock *ABS) hanya boleh diklaim untuk unit hijau/khaki. Unit putih/hitam jangan diberi label ABS/TCS.
+  - Brief "Fort 180: Brake with Confidence" (Okt) sudah benar: kedua unit hijau & khaki dilabel ABS + TCS.
+
 ## 2026-11-10
 
 - `[KOREKSI]` **Viento 180 — touchscreen dashboard bukan fitur besar.** Menurut user (10 Nov): fungsinya cuma speedometer biasa, bedanya ganti menu info lewat layar sentuh; data yang tampil standar (trip distance, konsumsi/jarak bensin, dsb). Klaim guide "real-time vehicle diagnostics" jangan dijadikan angle utama konten — pakai sebagai visual-only atau pindah ke poin lain (bagasi, hybrid engine).
